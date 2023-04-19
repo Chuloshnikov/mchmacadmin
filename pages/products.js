@@ -5,7 +5,12 @@ import Link from 'next/link';
 const Products = () => {
   return (
     <Layout>
-        <Link className='bg-gray-800 rounded-md text-white py-1 px-2' href={'/products/new'}>Add new product</Link>
+        <Link 
+        className='bg-gray-800 rounded-md text-white py-1 px-2 inline-block hover:scale-105 duration-300' 
+        href={'/products/new'}
+        >
+          Add new product
+        </Link>
     </Layout>
   )
 }

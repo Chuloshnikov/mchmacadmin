@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+input, textarea {
+    @apply border-2 border-gray-400 rounded-md px-1 w-full;
+    @apply mb-2 resize-none;
+}
+
+input:focus {
+    @apply border-gray-900; 
+}
+
+h1 {
+    @apply text-gray-800 mb-2 text-lg font-bold;
+}
+
+label {
+    @apply text-gray-800 font-semibold;
+}
+
+.btn-primary {
+    @apply bg-gray-800 text-white px-4 py-1 rounded-md hover:scale-105 duration-300;
+}
