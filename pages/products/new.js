@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import axios from "axios";
+import { unstable_renderSubtreeIntoContainer } from 'react-dom';
+import { redirect } from 'next/dist/server/api-utils';
+import { useRouter } from 'next/router';
 
 const NewProduct = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
+    const [goToProducts, setGoToProducts] = useState(false);
+    const router = useRouter();
 
     const createProduct = async (e) => {
         e.preventDefault();
         const data = {title, description, price};
         await axios.post('/api/products', data);
+        setGoToProducts(true);
     }
-
+    if(goToProducts) {
+      router.push('/products');
+    }
 
   return (
     <Layout>
