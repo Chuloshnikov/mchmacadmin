@@ -1,48 +1,45 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import { Inter } from 'next/font/google';
-import { useSession, signIn, signOut } from "next-auth/react";
-import Navbar from '@/components/Navbar';
+import Layout from '@/components/Layout';
+import { useSession } from 'next-auth/react';
+
 
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const {data: session} = useSession();
+  if(!session) return;
 
-  const { data: session } = useSession();
-  if (!session) {
-    return (
-      <>
-      <Head>
-        <title>MCH Macstore admin</title>
-        <meta name="description" content="Welcome to admin panel" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main>
-        <div className='bg-gray-800 w-screen h-screen flex items-center'>
-          <div className='text-center w-full'>
-              <button 
-              onClick={() => signIn('google')}
-              className='bg-white p-2 px-4 rounded-lg text-base font-semibold
-              hover:scale-105 duration-300
-              '>
-                Login with Google
-              </button>
+  return (
+    <>
+    <Head>
+      <title>MCH Macstore admin</title>
+      <meta name="description" content="Welcome to admin panel" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
+    <main>
+        <Layout>
+          <div className='text-gray-800 flex justify-between'>
+            <h2>
+              Hello, <b>{session?.user?.name}</b>
+            </h2>
+            <div className='flex bg-gray-300 gap-1 text-black rounded-lg overflow-hidden'>
+            <img src={session?.user?.image} alt="userImg" className='w-8 h-8'/>
+              <span className='py-1 px-2'>
+                {session?.user?.name}
+              </span>
+            </div>    
           </div>
-        </div>
-      </main>
-    </>
-    );
+        </Layout>
+    </main>
+  </>
+  );
+     
+   
 
-  } 
-   return (
-    <div className='bg-gray-800 min-h-screen flex'>
-      <Navbar/>
-        <div className='bg-white flex-grow mt-2 mr-2 rounded-lg p-4'>logged in {session.user.email}</div>
-    </div>
-    )
-  }
+}
 
   
 
