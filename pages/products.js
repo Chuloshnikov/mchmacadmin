@@ -1,13 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '@/components/Layout';
 import Link from 'next/link';
 import axios from 'axios';
 
+import { BsPencilSquare } from 'react-icons/bs';
+
 const Products = () => {
+
+  const [products, setProducts] = useState([]);
+
 
   useEffect(() => {
     axios.get('/api/products').then(response => {
-      console.log(response.data);
+      setProducts(response.data);
     })
   }, [])
 
@@ -19,6 +24,28 @@ const Products = () => {
         >
           Add new product
         </Link>
+        <table className='basic mt-2'>
+            <thead>
+                <tr>
+                  <td>Product name</td>
+                  <td></td>
+
+                </tr>
+            </thead>
+            <tbody>
+              {products.map((product) => (
+                <tr>
+                  <td>{product.title} </td>
+                  <td>
+                    <Link href={`/products/edit/${product._id}`}>
+                    <BsPencilSquare/>
+                      <span>Edit</span>
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+        </table>
     </Layout>
   )
 }
