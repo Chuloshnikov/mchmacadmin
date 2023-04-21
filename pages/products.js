@@ -3,7 +3,7 @@ import Layout from '@/components/Layout';
 import Link from 'next/link';
 import axios from 'axios';
 
-import { BsPencilSquare } from 'react-icons/bs';
+import { BsPencilSquare, BsFillTrashFill } from 'react-icons/bs';
 
 const Products = () => {
 
@@ -41,6 +41,10 @@ const Products = () => {
                     <BsPencilSquare/>
                       <span>Edit</span>
                     </Link>
+                    <Link href={`/products/delete/${product._id}`}>
+                    <BsFillTrashFill/>
+                      <span>Delete</span>
+                      </Link>
                   </td>
                 </tr>
               ))}
