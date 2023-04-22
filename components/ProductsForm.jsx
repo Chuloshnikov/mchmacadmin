@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import Layout from '@/components/Layout';
 import axios from "axios";
-import { redirect } from 'next/dist/server/api-utils';
 import { useRouter } from 'next/router';
+import { BsUpload } from 'react-icons/bs';
 
 const ProductsForm = ({
     _id,
     title: existingTitle, 
     description: existingDescription, 
     price: existingPrice,
+    images,
 }) => {
     const [title, setTitle] = useState(existingTitle || '');
     const [description, setDescription] = useState(existingDescription || '');
@@ -30,6 +30,18 @@ const ProductsForm = ({
     }
     if(goToProducts) {
       router.push('/products');
+    };
+
+    const uploadImages = async (e) => {
+      const files = e.target?.files;
+      if(files?.length > 0) {
+        const data = new FormData();
+        for (const file of files) {
+          data.append('file', file);
+        }
+        const res = await axios.post('/api/upload', data);
+        console.log(res.data);
+      }
     }
 
   return (
@@ -41,6 +53,26 @@ const ProductsForm = ({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             />
+        <label>Photos</label>
+        <div className='mb-2'>
+          <label className='w-24 h-24 border text-center 
+          flex items-center justify-center text-sm cursor-pointer 
+          gap-1 text-gray-500 rounded-lg bg-gray-200'
+          >
+            <BsUpload/>
+            <span>Upload</span>
+            <input 
+            onChange={uploadImages}
+            type="file" 
+            className='hidden'
+            />
+          </label>
+          {!images?.length && (
+            <div>
+              No photos in this product
+            </div>
+          )}
+        </div>
         <label>Description</label>
         <textarea
             placeholder='description...'
