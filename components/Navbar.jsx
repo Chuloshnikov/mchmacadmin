@@ -1,6 +1,7 @@
 import React from 'react';
 import { MdDesktopMac } from 'react-icons/md';
 import { AiOutlineHome, AiOutlineSetting, AiOutlineUnorderedList, AiOutlineInbox } from 'react-icons/ai';
+import { BiCategoryAlt } from 'react-icons/bi';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -35,6 +36,13 @@ const Navbar = () => {
             >
                 <AiOutlineInbox/>
                 Products
+            </Link>
+            <Link 
+            href={'/categories'}
+            className={pathname.includes('/categories') ? activeLink : inactiveLink}
+            >
+                <BiCategoryAlt/>
+                Categories
             </Link>
             <Link 
             href={'/orders'}
