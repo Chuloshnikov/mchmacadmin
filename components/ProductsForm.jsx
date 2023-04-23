@@ -8,17 +8,19 @@ const ProductsForm = ({
     title: existingTitle, 
     description: existingDescription, 
     price: existingPrice,
-    images,
+    images: existingImages,
 }) => {
     const [title, setTitle] = useState(existingTitle || '');
     const [description, setDescription] = useState(existingDescription || '');
     const [price, setPrice] = useState(existingPrice || '');
+    const [images, setImages] = useState(existingImages || []);
     const [goToProducts, setGoToProducts] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
     const router = useRouter();
 
     const createProduct = async (e) => {
         e.preventDefault();
-        const data = {title, description, price};
+        const data = {title, description, price, images};
         if (_id) {
             //create
             await axios.put('/api/products', {...data, _id});
@@ -35,12 +37,16 @@ const ProductsForm = ({
     const uploadImages = async (e) => {
       const files = e.target?.files;
       if(files?.length > 0) {
+        setIsUploading(true);
         const data = new FormData();
         for (const file of files) {
           data.append('file', file);
         }
         const res = await axios.post('/api/upload', data);
-        console.log(res.data);
+        setImages(oldImages => {
+          return [...oldImages, ...res.data.links]
+        });
+        setIsUploading(false);
       }
     }
 
@@ -54,7 +60,17 @@ const ProductsForm = ({
             onChange={(e) => setTitle(e.target.value)}
             />
         <label>Photos</label>
-        <div className='mb-2'>
+        <div className='mb-2 flex flex-wrap gap-2'>
+          {!!images?.length && images.map(link => (
+            <div key={link} className="h-24">
+              <img src={link} alt="productImg" className='rounded-lg'/>
+            </div>
+          ))}
+          {isUploading && (
+            <div className='h-24'>
+              Uploading...
+            </div>
+          )}
           <label className='w-24 h-24 border text-center 
           flex items-center justify-center text-sm cursor-pointer 
           gap-1 text-gray-500 rounded-lg bg-gray-200'
@@ -67,11 +83,7 @@ const ProductsForm = ({
             className='hidden'
             />
           </label>
-          {!images?.length && (
-            <div>
-              No photos in this product
-            </div>
-          )}
+          
         </div>
         <label>Description</label>
         <textarea

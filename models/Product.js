@@ -9,7 +9,10 @@ const ProductSchema = new mongoose.Schema({
     },
     price: {
         type: Number, required: true,
-    } 
+    },
+    images: {
+        type: [{type: String}]
+    }
 });
 
 export default mongoose.models.Product ||  mongoose.model('Product', ProductSchema)
