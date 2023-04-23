@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import axios from "axios";
 import { useRouter } from 'next/router';
 import { BsUpload } from 'react-icons/bs';
+import Spinner from './Spinner';
+import { ReactSortable } from "react-sortablejs";
+import { MdUpdate } from 'react-icons/md';
 
 const ProductsForm = ({
     _id,
@@ -48,6 +51,10 @@ const ProductsForm = ({
         });
         setIsUploading(false);
       }
+    };
+
+    const updateImagesOrder = (images) => {
+      setImages(images);
     }
 
   return (
@@ -60,15 +67,23 @@ const ProductsForm = ({
             onChange={(e) => setTitle(e.target.value)}
             />
         <label>Photos</label>
-        <div className='mb-2 flex flex-wrap gap-2'>
+        <div className='mb-2 flex flex-wrap gap-1'>
+          <ReactSortable 
+          className='flex flex-wrap gap-1'
+          list={images} 
+          setList={updateImagesOrder}
+          >
           {!!images?.length && images.map(link => (
             <div key={link} className="h-24">
-              <img src={link} alt="productImg" className='rounded-lg'/>
+              <img src={link} alt="productImg" 
+              className='rounded-lg'
+              />
             </div>
           ))}
+          </ReactSortable>
           {isUploading && (
-            <div className='h-24'>
-              Uploading...
+            <div className='h-24 p-1 bg-gray-200 flex items-center rounded-lg'>
+              <Spinner/>
             </div>
           )}
           <label className='w-24 h-24 border text-center 
