@@ -1,15 +1,21 @@
-import mongoose from 'mongoose';
 import { mongooseConnect } from "@/lib/mongooseConnect";
 import Category from "@/models/Category";
 
 export default async function handle(req, res) {
     const {method} = req;
 
-    mongooseConnect();
+    await mongooseConnect();
+
+    if(method === 'GET') {
+        res.json(await Category.find().populate('parent'));
+    }
 
     if(method === 'POST') {
-        const {name} = req.body;
-        const categoryDoc = await Category.create({name});
+        const {name, parentCategory} = req.body;
+        const categoryDoc = await Category.create({
+            name, 
+            parent: parentCategory,
+        });
         res.json(categoryDoc);
     }
 }
