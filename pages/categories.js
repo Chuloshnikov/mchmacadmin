@@ -3,7 +3,7 @@ import Layout from '@/components/Layout';
 import axios from 'axios';
 
 const Categories = () => {
-
+    const [editedCategory, setEditedCategory] = useState(null);
     const [name, setName] = useState('');
     const [parentCategory, setParentCategory] = useState('')
     const [categories, setCategories] = useState([]);
@@ -20,15 +20,32 @@ const Categories = () => {
 
     const saveCategory = async (e) => {
         e.preventDefault();
-        await axios.post('/api/categories', {name, parentCategory});
+        const data = { name, category };
+        if (editedCategory) {
+          data._id = editedCategory._id;
+          await axios.put('/api/categories', { data });
+          setEditedCategory(null);
+        } else {
+          await axios.post('/api/categories', { data });
+        }
+        
         setName('');
         fetchCategories();
+    }
+
+    const editCategory = (category) => {
+      setEditedCategory(category);
+      setName(category.name);
+      setParentCategory(category.parent?.шв)
     }
 
   return (
     <Layout>
         <h1>Categories</h1>
-        <label>New category name</label>
+        <label>{editedCategory 
+        ? `Edit category ${editedCategory.name}` 
+        : 'Create new category'}
+          </label>
         <form onSubmit={saveCategory} className='flex gap-1'>
             <input 
             className='mb-0' 
@@ -52,6 +69,7 @@ const Categories = () => {
             <tr>
               <td>Category name</td>
               <td>Parent category</td>
+              <td>Edit/Delete</td>
             </tr>
           </thead>
           <tbody>
@@ -59,6 +77,19 @@ const Categories = () => {
                   <tr key={category.name}>
                     <td>{category.name}</td>
                     <td>{category?.parent?.name}</td>
+                    <td>
+                      <button 
+                      onClick={() => editCategory(category)}
+                      className='btn-primary mr-1'
+                      >
+                        Edit
+                      </button>
+                      <button 
+                      className='btn-primary'
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
               ))}
           </tbody>
