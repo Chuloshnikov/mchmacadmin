@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '@/components/Layout';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const Categories = () => {
     const [editedCategory, setEditedCategory] = useState(null);
@@ -37,6 +38,29 @@ const Categories = () => {
       setEditedCategory(category);
       setName(category.name);
       setParentCategory(category.parent?.шв)
+    }
+
+    const deleteCategory = (category) => {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: `Do you want to delete ${category.name} category?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d55',
+        cancelButtonColor: '#1F2937',
+        confirmButtonText: 'Yes, delete it!'
+      }).then( async (result) => {
+        if (result.isConfirmed) {
+          const {_id} = category;
+          await axios.delete(`/api/categories?_id=${_id}`);
+          fetchCategories();
+          Swal.fire(
+            'Deleted!',
+            'Your file has been deleted.',
+            'success'
+          )
+        }
+      })
     }
 
   return (
@@ -85,6 +109,7 @@ const Categories = () => {
                         Edit
                       </button>
                       <button 
+                      onClick={() => deleteCategory(category)}
                       className='btn-primary'
                       >
                         Delete
