@@ -8,6 +8,7 @@ const Categories = () => {
     const [name, setName] = useState('');
     const [parentCategory, setParentCategory] = useState('')
     const [categories, setCategories] = useState([]);
+    const [properties, setProperties] = useState([]);
 
     useEffect(() => {
       fetchCategories();
@@ -21,25 +22,33 @@ const Categories = () => {
 
     const saveCategory = async (e) => {
         e.preventDefault();
-        const data = { name, category };
+        const data = {
+          name, 
+          parentCategory,
+          properties: properties.map(p => ({
+            name:p.name,
+            values:p.values.split(','),
+          }))
+        };
         if (editedCategory) {
           data._id = editedCategory._id;
-          await axios.put('/api/categories', { data });
+          await axios.put('/api/categories',  data);
           setEditedCategory(null);
         } else {
-          await axios.post('/api/categories', { data });
+          await axios.post('/api/categories',  data);
         }
-        
         setName('');
+        setParentCategory('');
+        setProperties([]);
         fetchCategories();
     }
 
     const editCategory = (category) => {
       setEditedCategory(category);
       setName(category.name);
-      setParentCategory(category.parent?.шв)
+      setParentCategory(category.parent?._id)
     }
-
+    
     const deleteCategory = (category) => {
       Swal.fire({
         title: 'Are you sure?',
@@ -63,6 +72,33 @@ const Categories = () => {
       })
     }
 
+    function addProperty() {
+      setProperties(prev => {
+        return [...prev, {name:'',values:''}];
+      });
+    }
+    function handlePropertyNameChange(index,property,newName) {
+      setProperties(prev => {
+        const properties = [...prev];
+        properties[index].name = newName;
+        return properties;
+      });
+    }
+    function handlePropertyValuesChange(index,property,newValues) {
+      setProperties(prev => {
+        const properties = [...prev];
+        properties[index].values = newValues;
+        return properties;
+      });
+    }
+    function removeProperty(indexToRemove) {
+      setProperties(prev => {
+        return [...prev].filter((p,pIndex) => {
+          return pIndex !== indexToRemove;
+        });
+      });
+    }
+    
   return (
     <Layout>
         <h1>Categories</h1>
@@ -83,7 +119,7 @@ const Categories = () => {
             >
               <option value="">No parent category</option>
                 {categories.length > 0 && categories.map(category => (
-                    <option value={category._id}>{category.name}</option>
+                    <option key={category._id} value={category._id}>{category.name}</option>
                 ))}
             </select>
             <button className='btn-primary'>Save</button>
